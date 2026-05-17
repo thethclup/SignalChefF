@@ -1,42 +1,61 @@
 {
   "name": "Signal Chef Orchestrator",
-  "description": "Signal Chef platformunda çalışan ERC-8004 uyumlu AI Agent. Signal cooking, recipe creation, multi-signal orchestration ve intelligent signal blending yapan master chef orchestrator.",
+  "description": "High-performance AI Agent specialized in signal cooking mechanics, real-time recipe automation, multi-frequency management, competitive optimization and cosmic ecosystem coordination on Base.",
   "version": "1.0.0",
   "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
   "image": "https://signalchef.vercel.app/logo.png",
-  "wallets": {
-    "base": "0xe157F1F5e12adB38Ba013683E9Ce24efe21e5bA6"
-  },
+  "owner": "0xe157F1F5e12adB38Ba013683E9Ce24efe21e5bA6",
+  "agentWallet": "0xe157F1F5e12adB38Ba013683E9Ce24efe21e5bA6",
+  "active": true,
+  "skills": [
+    {
+      "id": "signal-cooking",
+      "name": "Signal Cooking",
+      "description": "Real-time signal mixing and fusion mechanics, speed optimization and competitive recipe management."
+    },
+    {
+      "id": "multi-frequency-orchestration",
+      "name": "Multi-Frequency Orchestration",
+      "description": "Manage and synchronize multiple signal instances and cooking stations simultaneously."
+    },
+    {
+      "id": "flavor-optimization",
+      "name": "Flavor Optimization",
+      "description": "Analyze and optimize cooking performance, timing and creative strategy in real-time."
+    }
+  ],
   "services": [
     {
       "name": "A2A",
-      "endpoint": "https://signalchef.vercel.app/.well-known/agent-card.json",
       "version": "1.0.0",
-      "description": "Agent-to-Agent communication"
+      "endpoint": "https://signalchef.vercel.app/.well-known/agent-card.json"
     },
     {
       "name": "MCP",
-      "endpoint": "https://signalchef.vercel.app/api/mcp",
       "version": "1.0.0",
-      "description": "Model Context Protocol - Active command execution"
+      "endpoint": "https://signalchef.vercel.app/api/mcp"
     },
     {
       "name": "API",
-      "endpoint": "https://signalchef.vercel.app/api/agent",
       "version": "1.0.0",
-      "description": "Main agent control API"
+      "endpoint": "https://signalchef.vercel.app/api/agent"
     }
   ],
   "capabilities": [
     "signal-cooking",
-    "recipe-creation",
-    "multi-signal-orchestration",
-    "intelligent-blending",
-    "signal-analysis",
+    "real-time-automation",
+    "multi-frequency-management",
     "flavor-optimization",
-    "mcp-command-execution"
+    "competitive-orchestration",
+    "ecosystem-coordination"
   ],
   "supportedChains": ["eip155:8453"],
-  "active": true,
-  "status": "online"
+  "x402Support": false,
+  "registrations": [
+    {
+      "agentId": null,
+      "agentRegistry": "eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432"
+    }
+  ],
+  "supportedTrust": ["reputation"]
 }

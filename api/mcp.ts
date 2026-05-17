@@ -1,28 +1,6 @@
-import express from "express";
-import path from "path";
-import { createServer as createViteServer } from "vite";
-
-async function startServer() {
-  const app = express();
-  const PORT = 3000;
-
-  // Middleware to parse JSON bodies
-  app.use(express.json());
-
-  // API Route for Agent
-  app.get("/api/agent", (req, res) => {
-    res.json({
-      name: "Signal Chef Orchestrator",
-      status: "active",
-      wallet: "0xe157F1F5e12adB38Ba013683E9Ce24efe21e5bA6",
-      platform: "Signal Chef",
-      version: "1.0.0"
-    });
-  });
-
-  // API Routes for MCP
-  app.get("/api/mcp", (req, res) => {
-    res.json({
+export default function handler(req: any, res: any) {
+  if (req.method === 'GET') {
+    return res.status(200).json({
       protocol: "MCP",
       version: "1.0.0",
       name: "Signal Chef MCP Endpoint",
@@ -54,20 +32,32 @@ async function startServer() {
         }
       ],
       prompts: [
-        { name: "daily_special", description: "Request the daily special signal recipe." },
-        { name: "kitchen_status", description: "Review current open tickets and station status." }
+        {
+          name: "daily_special",
+          description: "Request the daily special signal recipe."
+        },
+        {
+          name: "kitchen_status",
+          description: "Review current open tickets and station status."
+        }
       ],
       resources: [
-        { uri: "signal://kitchen/status", name: "Kitchen Status", description: "Current status of the cosmic kitchen and active stations" }
+        {
+          uri: "signal://kitchen/status",
+          name: "Kitchen Status",
+          description: "Current status of the cosmic kitchen and active stations"
+        }
       ],
       capabilities: ["signal-cooking", "recipe-creation", "multi-signal-orchestration"],
       timestamp: new Date().toISOString()
     });
-  });
+  }
 
-  app.post("/api/mcp", (req, res) => {
+  if (req.method === 'POST') {
     try {
-      const { action, command, params } = req.body;
+      const body = req.body;
+      const { action, command, params } = body || {};
+
       let result: any = {};
 
       switch (action || command) {
@@ -102,42 +92,24 @@ async function startServer() {
           result = {
             success: true,
             message: "Command received by Signal Chef",
-            data: req.body
+            data: body
           };
       }
 
-      res.json({
+      return res.status(200).json({
         status: "success",
         agent: "Signal Chef Orchestrator",
         response: result,
         receivedAt: new Date().toISOString()
       });
+
     } catch (error) {
-      res.status(400).json({
+      return res.status(400).json({
         status: "error",
         message: "Failed to process MCP command"
       });
     }
-  });
-
-  // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+  return res.status(405).json({ message: "Method not allowed" });
 }
-
-startServer();
