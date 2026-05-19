@@ -1,47 +1,55 @@
 # Signal Chef - Cosmic Kitchen & Mixed Frequencies
 
-Signal Chef is a fun, colorful, and satisfying cooking + signal mixing game built on the Base Mainnet.
+Signal Chef Orchestrator is a High-performance AI Agent specialized in signal cooking mechanics, real-time recipe automation, multi-frequency management, competitive optimization, and cosmic ecosystem coordination on the Base blockchain.
+
+## Project Overview
 
 You are a **Signal Chef** who runs a cosmic kitchen. Collect different signals (radio waves, data streams, memes, frequencies) and combine them in creative recipes to cook powerful "Signal Dishes" that spread across the universe.
 
-## Core Features
-1. **Signal Fusion Gameplay**: Drag & drop various signals (WiFi, 5G, Meme, Quantum, Ancient Radio) to mix and cook them.
-2. **On-Chain Components**: Real Web3 integration (Wagmi + Viem + Base).
-3. **ERC-8021 Attribution**: Full build attribution via ERC-8021 using builder code.
-4. **ERC-8004 Trustless Agents / MCP Integration**: This platform natively features a built-in Agent via `public/.well-known/agent-card.json` and Model Context Protocol (MCP) APIs located under `/api/mcp` and `/api/agent`.
+## Tech Stack
+- Frontend: React + Vite + Tailwind CSS
+- Blockchain: Wagmi + Viem
+- Agent Capabilities: Model Context Protocol (MCP) + ERC-8004 + ERC-8021
+- Backend API Integration: App Router Serverless endpoints (Deployable to Vercel)
 
-## Web3 Configuration / Sensitive Information
-- The game targets the **Base** chain (Chain Validation, SIWE, and Attributions).
-- Agent Wallet Address: `0xe157F1F5e12adB38Ba013683E9Ce24efe21e5bA6`
-- Agent capabilities involve `signal-cooking`, `recipe-creation`, `multi-signal-orchestration`, and `mcp-command-execution`.
-- Builder Code: `bc_gt6nfpi5`
+## Skills & Capabilities
+- **Signal Cooking**: Real-time signal mixing and fusion mechanics, speed optimization and competitive recipe management.
+- **Multi-Frequency Orchestration**: Manage and synchronize multiple signal instances and cooking stations simultaneously.
+- **Flavor Optimization**: Analyze and optimize cooking performance, timing and creative strategy in real-time.
 
-## Agent Documentation (AI / MCP APIs)
+Additional capabilities: `real-time-automation`, `competitive-orchestration`, `ecosystem-coordination`
 
-The Signal Chef Orchestrator Agent APIs are hosted directly on this platform to allow interoperability.
+## Agent Registration Info
 
-### 1. Agent Discovery (.well-known)
-File: `public/.well-known/agent-card.json`
-Endpoint: `GET /.well-known/agent-card.json`
-Standard ERC-8004 definition of the Signal Chef Orchestrator, its capabilities, and active wallets.
+This project fully supports ERC-8004 Trustless Agents via the standard `agent-card.json` specification:
 
-### 2. General Agent API
-File: `app/api/agent/route.ts`
-Endpoint: `GET /api/agent`
-Returns the status, wallet, and basic identification information of the Agent.
+- **Agent Registry Contract**: `eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432`
+- **Supported Chains**: `eip155:8453` (Base Mainnet)
+- **Agent Card URL**: `https://signalchef.vercel.app/.well-known/agent-card.json`
 
-### 3. MCP API
-File: `app/api/mcp/route.ts`
-Endpoint: `GET /api/mcp` - Returns Agent's MCP capability descriptions.
-Endpoint: `POST /api/mcp` - Executes MCP commands on behalf of the agent (e.g. `action: "execute"`, `command: "Quantum Singularity"`).
+## Model Context Protocol (MCP) Connection Guide
 
-## Running The Project
+The Signal Chef Orchestrator integrates the Model Context Protocol (MCP) allowing deep tool usage, execution, and inspection.
+
+- **MCP Endpoint**: `POST /api/mcp` and `GET /api/mcp`
+- **Agent Control API**: `GET /api/agent` and `POST /api/agent`
+- **Capabilities provided over MCP**: Tools, Actions, Executions, and Environment reading.
+
+The API exposes an App Router compatible endpoint natively to integrate with Next.js or Vercel edge/serverless functions.
+
+## How to Run Locally
+
+If you clone this repository and want to run it on your local environment:
 
 ```bash
-# Start development server
+# 1. Install dependencies
+npm install
+
+# 2. Start development server (runs both Vite and local API proxy)
 npm run dev
 
-# Build for production
+# 3. Build for production
 npm run build
 npm run start
 ```
+
