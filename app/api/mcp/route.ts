@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server';
 
+function corsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
+}
+
 export async function GET() {
   return NextResponse.json({
     protocol: "MCP",
@@ -44,11 +52,7 @@ export async function GET() {
     capabilities: ["signal-cooking", "real-time-automation", "multi-frequency-management", "flavor-optimization", "competitive-orchestration", "ecosystem-coordination"],
     timestamp: new Date().toISOString()
   }, {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    }
+    headers: corsHeaders()
   });
 }
 
@@ -56,9 +60,9 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     
-    // Standard MCP JSON-RPC handling
     const { jsonrpc, id, method, params } = body;
 
+    // Handle MCP protocol initialization and tool listing
     if (jsonrpc === "2.0" || method) {
       if (method === "initialize") {
         return NextResponse.json({
@@ -153,7 +157,7 @@ export async function POST(req: Request) {
       }
     }
 
-    // Fallback for custom action/command requests
+    // Fallback for direct agent API requests
     const { action, command, params: fallbackParams } = body || {};
     let result: any = {};
 
@@ -211,31 +215,15 @@ export async function POST(req: Request) {
   }
 }
 
-function corsHeaders() {
-  return {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  };
-}
-
 export async function HEAD() {
   return new Response(null, {
     status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    }
+    headers: corsHeaders()
   });
 }
 
 export async function OPTIONS() {
   return NextResponse.json({}, {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    }
+    headers: corsHeaders()
   });
 }

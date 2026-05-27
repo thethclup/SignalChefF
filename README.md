@@ -23,7 +23,6 @@ Additional capabilities: `real-time-automation`, `competitive-orchestration`, `e
 
 This project fully supports ERC-8004 Trustless Agents via the standard `agent-card.json` specification:
 
-- **Agent Registry Contract**: `eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432`
 - **Supported Chains**: `eip155:8453` (Base Mainnet)
 - **Agent Card URL**: `https://signalchef.vercel.app/.well-known/agent-card.json`
 
