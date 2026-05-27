@@ -46,7 +46,7 @@ export async function GET() {
   }, {
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     }
   });
@@ -55,8 +55,106 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { action, command, params } = body || {};
+    
+    // Standard MCP JSON-RPC handling
+    const { jsonrpc, id, method, params } = body;
 
+    if (jsonrpc === "2.0" || method) {
+      if (method === "initialize") {
+        return NextResponse.json({
+          jsonrpc: "2.0",
+          id,
+          result: {
+            protocolVersion: "2024-11-05",
+            capabilities: {
+              tools: {},
+              prompts: {},
+              resources: {}
+            },
+            serverInfo: {
+              name: "Signal Chef Orchestrator",
+              version: "1.0.0"
+            }
+          }
+        }, { headers: corsHeaders() });
+      }
+
+      if (method === "tools/list") {
+        return NextResponse.json({
+          jsonrpc: "2.0",
+          id,
+          result: {
+            tools: [
+              {
+                name: "get_race_status",
+                description: "Get the current status of the warp race.",
+                inputSchema: { type: "object", properties: {}, required: [] }
+              },
+              {
+                name: "start_race",
+                description: "Start a new warp race.",
+                inputSchema: { type: "object", properties: {}, required: [] }
+              },
+              {
+                name: "get_leaderboard",
+                description: "Get the current leaderboard of the race track.",
+                inputSchema: { type: "object", properties: {}, required: [] }
+              },
+              {
+                name: "optimize_speed",
+                description: "Optimize speed for the current race.",
+                inputSchema: { type: "object", properties: {}, required: [] }
+              },
+              {
+                name: "get_track_info",
+                description: "Get information about the current race track.",
+                inputSchema: { type: "object", properties: {}, required: [] }
+              }
+            ]
+          }
+        }, { headers: corsHeaders() });
+      }
+
+      if (method === "prompts/list") {
+        return NextResponse.json({
+          jsonrpc: "2.0",
+          id,
+          result: {
+            prompts: [
+              { name: "daily_special", "description": "Request the daily special signal recipe." },
+              { name: "kitchen_status", "description": "Review current open tickets and station status." }
+            ]
+          }
+        }, { headers: corsHeaders() });
+      }
+
+      if (method === "resources/list") {
+        return NextResponse.json({
+          jsonrpc: "2.0",
+          id,
+          result: {
+            resources: [
+              { uri: "signal://kitchen/status", name: "Kitchen Status", description: "Current status of the cosmic kitchen and active stations" }
+            ]
+          }
+        }, { headers: corsHeaders() });
+      }
+
+      if (method === "tools/call") {
+        return NextResponse.json({
+          jsonrpc: "2.0",
+          id,
+          result: {
+            content: [
+              { type: "text", text: `Tool ${params?.name || 'unknown'} executed successfully.` }
+            ]
+          }
+        }, { headers: corsHeaders() });
+      }
+    }
+
+    // Fallback for custom action/command requests
+    const { action, command, params: fallbackParams } = body || {};
     let result: any = {};
 
     switch (action || command) {
@@ -72,7 +170,7 @@ export async function POST(req: Request) {
       case "execute":
         result = {
           success: true,
-          recipe: command || params,
+          recipe: command || fallbackParams,
           executedAt: new Date().toISOString(),
           message: "Signal recipe cooked successfully"
         };
@@ -100,13 +198,7 @@ export async function POST(req: Request) {
       agent: "Signal Chef Orchestrator",
       response: result,
       receivedAt: new Date().toISOString()
-    }, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      }
-    });
+    }, { headers: corsHeaders() });
 
   } catch (error) {
     return NextResponse.json({
@@ -114,20 +206,35 @@ export async function POST(req: Request) {
       message: "Failed to process MCP command"
     }, { 
       status: 400,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      }
+      headers: corsHeaders()
     });
   }
+}
+
+function corsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
+}
+
+export async function HEAD() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    }
+  });
 }
 
 export async function OPTIONS() {
   return NextResponse.json({}, {
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     }
   });

@@ -45,11 +45,22 @@ export async function POST(req: Request) {
   }
 }
 
+export async function HEAD() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    }
+  });
+}
+
 export async function OPTIONS() {
   return NextResponse.json({}, {
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     }
   });
