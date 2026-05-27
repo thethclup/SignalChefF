@@ -51,18 +51,16 @@ export async function GET() {
     ],
     capabilities: ["signal-cooking", "real-time-automation", "multi-frequency-management", "flavor-optimization", "competitive-orchestration", "ecosystem-coordination"],
     timestamp: new Date().toISOString()
-  }, {
-    headers: corsHeaders()
-  });
+  }, { headers: corsHeaders() });
 }
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     
-    const { jsonrpc, id, method, params } = body;
+    // Check if body exists and extract MCP fields
+    const { jsonrpc, id, method, params } = body || {};
 
-    // Handle MCP protocol initialization and tool listing
     if (jsonrpc === "2.0" || method) {
       if (method === "initialize") {
         return NextResponse.json({
@@ -125,8 +123,8 @@ export async function POST(req: Request) {
           id,
           result: {
             prompts: [
-              { name: "daily_special", "description": "Request the daily special signal recipe." },
-              { name: "kitchen_status", "description": "Review current open tickets and station status." }
+              { name: "daily_special", description: "Request the daily special signal recipe." },
+              { name: "kitchen_status", description: "Review current open tickets and station status." }
             ]
           }
         }, { headers: corsHeaders() });
@@ -157,7 +155,7 @@ export async function POST(req: Request) {
       }
     }
 
-    // Fallback for direct agent API requests
+    // Fallback for custom action/command requests
     const { action, command, params: fallbackParams } = body || {};
     let result: any = {};
 
@@ -170,7 +168,6 @@ export async function POST(req: Request) {
           message: "Kitchen is hot - Ready to cook signals!" 
         };
         break;
-
       case "execute":
         result = {
           success: true,
@@ -179,7 +176,6 @@ export async function POST(req: Request) {
           message: "Signal recipe cooked successfully"
         };
         break;
-
       case "get_info":
         result = {
           name: "Signal Chef Orchestrator",
@@ -188,7 +184,6 @@ export async function POST(req: Request) {
           version: "1.0.0"
         };
         break;
-
       default:
         result = {
           success: true,
