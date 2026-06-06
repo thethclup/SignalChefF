@@ -2,12 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Ingredient, SignalType, SIGNAL_COLORS, Dish, RECIPES } from '../game/types';
 import confetti from 'canvas-confetti';
+import { useAccount, useSendTransaction } from 'wagmi';
+import { Sun } from 'lucide-react';
 
 export function MainKitchen({ onDishCooked }: { onDishCooked: (dish: Dish) => void }) {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [potContents, setPotContents] = useState<SignalType[]>([]);
   const [isCooking, setIsCooking] = useState(false);
   const [cookedDish, setCookedDish] = useState<Dish | null>(null);
+
+  const { isConnected } = useAccount();
+  const { sendTransaction } = useSendTransaction();
+
+  const sendGMTransaction = () => {
+    try {
+      sendTransaction({
+        to: '0xcD0dd3716C5561De47a24949335dF8a8CD8F71a3',
+        value: 0n,
+      });
+    } catch (e) {
+      console.error(e);
+      alert('Transaction failed. See console.');
+    }
+  };
+
+  const recordFeastOnChain = () => {
+    try {
+      sendTransaction({
+        to: '0xcD0dd3716C5561De47a24949335dF8a8CD8F71a3',
+        value: 0n,
+      });
+    } catch (e) {
+      console.error(e);
+      alert('Transaction failed. See console.');
+    }
+  };
 
   // Spawn random ingredients over time
   useEffect(() => {
@@ -197,17 +226,39 @@ export function MainKitchen({ onDishCooked }: { onDishCooked: (dish: Dish) => vo
             <motion.div 
               initial={{ scale: 0.8, y: 50 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-cosmic-dark border-2 border-neon-yellow p-8 rounded-3xl max-w-sm w-full text-center glow-yellow glow-pink"
+              className="bg-[#0A0510] border-2 border-pink-500 p-8 rounded-3xl max-w-sm w-full text-center shadow-[0_0_50px_rgba(236,72,153,0.3)]"
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="text-6xl mb-4">{cookedDish.isLegendary ? '🏆' : '🍲'}</div>
-              <h2 className="text-2xl font-bold text-neon-yellow mb-2 text-glow-yellow">{cookedDish.name}</h2>
+              <h2 className="text-2xl font-black italic text-pink-400 mb-2">{cookedDish.name}</h2>
               <div className="flex justify-center gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
                   <span key={i} className={`text-xl ${i < cookedDish.rating ? 'text-yellow-400' : 'text-gray-600'}`}>⭐</span>
                 ))}
               </div>
-              <p className="text-neon-pink font-mono text-xl mb-6">+{cookedDish.score} PTS</p>
-              <button className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-xl font-bold uppercase border border-white/20">
+              <p className="text-yellow-400 font-bold text-2xl tracking-tighter mb-6">+{cookedDish.score} PTS</p>
+
+              {isConnected && (
+                <div className="flex flex-col gap-3 mb-6">
+                  <button 
+                    onClick={sendGMTransaction}
+                    className="w-full px-3 py-3 rounded-xl bg-[#E8A020]/20 hover:bg-[#E8A020]/30 border border-[#E8A020]/40 text-[#E8A020] transition-colors flex items-center justify-center gap-2 font-['Cinzel'] text-sm font-bold uppercase tracking-wider"
+                  >
+                    <Sun size={18} /> Say GM
+                  </button>
+                  <button 
+                    onClick={recordFeastOnChain}
+                    className="w-full py-3 bg-pink-600/20 hover:bg-pink-600/40 text-pink-400 border border-pink-500/50 rounded-xl font-bold uppercase tracking-wider transition-colors"
+                  >
+                    Record This Feast On-Chain
+                  </button>
+                </div>
+              )}
+              
+              <button 
+                onClick={() => setCookedDish(null)}
+                className="w-full py-3 bg-white/10 hover:bg-white/20 text-slate-300 rounded-xl font-bold uppercase tracking-widest border border-white/10 transition-colors"
+              >
                 Continue Cooking
               </button>
             </motion.div>

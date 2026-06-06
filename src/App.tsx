@@ -3,57 +3,82 @@ import { Web3Provider } from './components/Web3Provider';
 import { MainKitchen } from './components/MainKitchen';
 import { Web3Widgets } from './components/Web3Widgets';
 import { Dish } from './game/types';
-import { ChefHat, ListTodo, Trophy, Menu } from 'lucide-react';
+import { ChefHat, ListTodo, Trophy, Sun } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAccount, useSendTransaction } from 'wagmi';
 
-export default function App() {
+function GameContent() {
   const [totalScore, setTotalScore] = useState(0);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [activeTab, setActiveTab] = useState<'kitchen' | 'recipes' | 'leaderboard'>('kitchen');
+
+  const { address, isConnected } = useAccount();
+  const { sendTransaction } = useSendTransaction();
 
   const handleDishCooked = (dish: Dish) => {
     setDishes(prev => [dish, ...prev].slice(0, 50));
     setTotalScore(prev => prev + dish.score);
   };
 
-  return (
-    <Web3Provider>
-      <div className="min-h-screen flex flex-col items-center bg-[#05050D] text-white p-4 sm:p-8 font-sans relative overflow-hidden">
-        
-        {/* Background Blobs */}
-        <div className="absolute inset-0 opacity-20 pointer-events-none z-0 overflow-hidden">
-          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-pink-600 rounded-full blur-[120px]"></div>
-          <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600 rounded-full blur-[120px]"></div>
-        </div>
-        
-        {/* Header */}
-        <header className="w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between px-8 py-6 z-10 border-b border-white/10 bg-black/40 backdrop-blur-md rounded-2xl mb-8">
-          <div className="flex items-center gap-4 mb-4 sm:mb-0">
-            <div className="w-12 h-12 bg-gradient-to-tr from-pink-500 via-purple-500 to-orange-400 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(236,72,153,0.5)]">
-              <ChefHat className="w-8 h-8 font-black" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-black tracking-tighter uppercase italic">
-                Signal Chef
-              </h1>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-pink-400 font-bold mt-1">
-                Cosmic Kitchen v1.0
-              </p>
-            </div>
-          </div>
+  const sendGMTransaction = () => {
+    try {
+      sendTransaction({
+        to: '0xcD0dd3716C5561De47a24949335dF8a8CD8F71a3',
+        value: 0n,
+        // Optional tracking data could be here if required
+      });
+    } catch (e) {
+      console.error(e);
+      alert('Transaction failed. See console.');
+    }
+  };
 
-          <div className="flex items-center gap-6">
-            <div className="text-right">
-              <div className="text-[10px] uppercase text-slate-400 font-semibold mb-1">Reputation Score</div>
-              <p className="text-2xl font-bold text-neon-yellow text-glow-yellow">{totalScore}</p>
-            </div>
-            <div className="h-12 w-px bg-white/10 hidden sm:block"></div>
-            <div className="text-right hidden sm:block">
-              <div className="text-[10px] uppercase text-slate-400 font-semibold mb-1">Total Signals</div>
-              <p className="text-2xl font-bold text-white">{dishes.length}</p>
-            </div>
+  return (
+    <div className="min-h-screen flex flex-col items-center bg-[#05050D] text-white p-4 sm:p-8 font-sans relative overflow-hidden">
+      
+      {/* Background Blobs */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-pink-600 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600 rounded-full blur-[120px]"></div>
+      </div>
+      
+      {/* Header */}
+      <header className="w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between px-8 py-6 z-10 border-b border-white/10 bg-black/40 backdrop-blur-md rounded-2xl mb-8">
+        <div className="flex items-center gap-4 mb-4 sm:mb-0">
+          <div className="w-12 h-12 bg-gradient-to-tr from-pink-500 via-purple-500 to-orange-400 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(236,72,153,0.5)]">
+            <ChefHat className="w-8 h-8 font-black" />
           </div>
-        </header>
+          <div>
+            <h1 className="text-2xl font-black tracking-tighter uppercase italic">
+              Signal Chef
+            </h1>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-pink-400 font-bold mt-1">
+              Cosmic Kitchen v1.0
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+          {isConnected && (
+            <button 
+              onClick={sendGMTransaction}
+              className="px-3 py-2 rounded-lg bg-[#E8A020]/20 hover:bg-[#E8A020]/30 border border-[#E8A020]/40 text-[#E8A020] transition-colors flex items-center gap-2 font-['Cinzel'] text-xs font-bold"
+            >
+              <Sun size={14} /> Say GM
+            </button>
+          )}
+
+          <div className="text-right">
+            <div className="text-[10px] uppercase text-slate-400 font-semibold mb-1">Reputation Score</div>
+            <p className="text-2xl font-bold text-[#E8A020] shadow-[#E8A020]/50 drop-shadow-md">{totalScore}</p>
+          </div>
+          <div className="h-12 w-px bg-white/10 hidden sm:block"></div>
+          <div className="text-right hidden sm:block">
+            <div className="text-[10px] uppercase text-slate-400 font-semibold mb-1">Total Signals</div>
+            <p className="text-2xl font-bold text-white">{dishes.length}</p>
+          </div>
+        </div>
+      </header>
 
         {/* Main Content Area */}
         <main className="w-full max-w-4xl flex-1 flex flex-col items-center justify-center relative z-10">
@@ -192,6 +217,13 @@ export default function App() {
           </div>
         </footer>
       </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Web3Provider>
+      <GameContent />
     </Web3Provider>
   );
 }
