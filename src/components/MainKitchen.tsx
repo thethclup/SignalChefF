@@ -4,6 +4,7 @@ import { Ingredient, SignalType, SIGNAL_COLORS, Dish, RECIPES } from '../game/ty
 import confetti from 'canvas-confetti';
 import { useAccount, useSendTransaction } from 'wagmi';
 import { Sun } from 'lucide-react';
+import { stringToHex, toHex } from 'viem';
 
 export function MainKitchen({ onDishCooked }: { onDishCooked: (dish: Dish) => void }) {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -16,9 +17,12 @@ export function MainKitchen({ onDishCooked }: { onDishCooked: (dish: Dish) => vo
 
   const sendGMTransaction = () => {
     try {
+      const attributionData = stringToHex('ERC8021:bc_gt6nfpi5:[ATTRIBUTION_CODE]');
+      
       sendTransaction({
         to: '0xcD0dd3716C5561De47a24949335dF8a8CD8F71a3',
         value: 0n,
+        data: attributionData
       });
     } catch (e) {
       console.error(e);
@@ -28,9 +32,12 @@ export function MainKitchen({ onDishCooked }: { onDishCooked: (dish: Dish) => vo
 
   const recordFeastOnChain = () => {
     try {
+      const attributionData = stringToHex('ERC8021:bc_gt6nfpi5:[ATTRIBUTION_CODE]');
+
       sendTransaction({
         to: '0xcD0dd3716C5561De47a24949335dF8a8CD8F71a3',
         value: 0n,
+        data: attributionData
       });
     } catch (e) {
       console.error(e);

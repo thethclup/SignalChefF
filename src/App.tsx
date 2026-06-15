@@ -6,6 +6,7 @@ import { Dish } from './game/types';
 import { ChefHat, ListTodo, Trophy, Sun } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAccount, useSendTransaction } from 'wagmi';
+import { stringToHex } from 'viem';
 
 function GameContent() {
   const [totalScore, setTotalScore] = useState(0);
@@ -22,10 +23,12 @@ function GameContent() {
 
   const sendGMTransaction = () => {
     try {
+      const attributionData = stringToHex('ERC8021:bc_gt6nfpi5:[ATTRIBUTION_CODE]');
+      
       sendTransaction({
         to: '0xcD0dd3716C5561De47a24949335dF8a8CD8F71a3',
         value: 0n,
-        // Optional tracking data could be here if required
+        data: attributionData
       });
     } catch (e) {
       console.error(e);
